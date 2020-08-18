@@ -12,7 +12,7 @@ contract Match {
     string public opponent2;
 
     // Time of the match
-    uint public time;
+    uint public startTime;
 
     // Initiator of the match
     address public bookmaker;
@@ -26,21 +26,19 @@ contract Match {
 
     // Bets
     //
+    // position 0 : bets for draw
     // position 1 : bets for the opponent1
     // position 2 : bets for the opponent2
-    // position 3 : bets for draw
     //
-    mapping(address => uint)[] public bets;
+    mapping(address => uint)[3] public bets;
+    uint[3] public totalBetsPerPosition;
+    address[] public bettors;
 
     // Accepted token in the betting
     DaiToken daiToken;
 
-    // Events
-    Event Withdrawal(address receiver, uint amount);
-    Event Deposit(address receiver, uint amount);
 
-
-    constructor(DCSport addr, string _opponent1, string _opponent2, uint _time, bool _acceptDraw) public {
+    constructor(DCSport addr, string _opponent1, string _opponent2, uint _startTime, bool _acceptDraw) public {
 
     	// Register the match within the organization
     	dcsport = addr;
@@ -50,11 +48,9 @@ contract Match {
         bookmaker = msg.sender;
         opponent1 = _opponent1;
         opponent2 = _opponent2;
-        time = _time;
+        startTime = _startTime;
         acceptDraw = _acceptDraw;
         status = Status.INIT;
-
-        bets.length = acceptDraw ? 3 : 2;
 
         daiToken = DaiToken(0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa);
     }
@@ -64,40 +60,85 @@ contract Match {
     	_;
     }
     
-    modifier validBet(uint8 position, uint amount) { 
-    	require(status == Status.ON_GOING, "The betting is not on going");
-    	require(amount > 1, "The minimum value of betting is 1");
-
+    modifier validPosition(uint8 position, uint amount) { 
     	if (acceptDraw)
     		require(position == 0 || position == 1 || position == 2, "Unknown position");
 		else
-			require(position == 1 || position == 2, , "Unknown position")
+			require(position == 1 || position == 2, "Unknown position")
 
       	_;
     }
 
-    function bet(uint8 position, uint amount) public validBet(position, amount)  {
-    	if (block.timestamp > (time - 5 minutes)) {
-
-    	} else {
-    		require(daiToken.balanceOf(msg.sender) > amount, "Insufficient balance of DAI");
-
-    		daiToken.transfert(bookmaker, amount)
-
-    		bets[position][msg.sender] = bets[position][msg.sender] + amount;
-    	}
+    modifier validStatus(Status validStatus) { 
+        require(status == validStatus, "The betting is not on going");
+        _;
     }
 
-    function declareWinner(uint8 position, uint amount) public refereePower {
-        if (block.timestamp > time) {
+    function bet(uint8 betPosition, uint amount) public validStatus(Status.ON_GOING) validPosition(betPosition) {
+        require(block.timestamp > (startTime - 5 minutes), "The bets are not available anymore for this match");
+        require(amount > 1, "The minimum value of betting is 1 DAI");
+        require(daiToken.balanceOf(msg.sender) > amount, "Insufficient balance of DAI");
 
+        daiToken.transferFrom(msg.sender, bookmaker, amount)
+        bets[position][msg.sender] += amount;
+        totalBetsPerPosition[position] += amount;
 
+        if (!hasAlreadyBet(msg.sender))
+            bettors.push(msg.sender)
+    }
 
-        	status = Status.FINISHED;
+    function declareWinner(uint8 winnerPosition) public refereePower validStatus(Status.ON_GOING) validPosition(winnerPosition) {
+        require(block.timestamp > startTime, "Cannot declare winner before the starting time of the match");
+
+        // We get the total amount to distribute
+
+        uint totalToDistribute = 0;
+
+        for (uint8 i=0; i < totalBetsPerPosition.length; i++) {
+            totalToDistribute += totalBetsPerPosition[i];
         }
+
+        // We distribute to all the winners
+
+        for (uint i=0; i < bettors.length; i++) {
+            if (bets[winnerPosition][bettors[i]] > 0) {
+                uint prizeRatio = bets[winnerPosition][bettors[i]] / totalBetsPerPosition[winnerPosition]
+                daiToken.transfer(bettors[i], totalToDistribute * prizeRatio);
+            }
+        }
+
+        // We close the match
+
+        status = Status.FINISHED;
     }
 
-    function cancel() public refereePower {
+    function cancel() public refereePower validStatus(Status.ON_GOING) {
+
+        // we distribute back the funds from the on-going bets
+
+        for (uint8 i=0; i < totalBetsPerPosition.length; i++) {
+            if (totalBetsPerPosition > 0) {
+                for (uint y=0; y < bettors.length; y++) {
+                    if (bets[i][bettor[y]] > 0) {
+                        uint prizeRatio = bets[i][bettor[y]] / totalBetsPerPosition[winnerPosition]
+                        daiToken.transfer(bettor[y], totalToDistribute * prizeRatio);
+                    }
+                }
+            }
+        }
+
+        // We set the match as cancelled
+
     	status = Status.CANCELLED;
+    }
+
+    function hasAlreadyBet(address addr) private {
+
+        for (uint8 i=0; i < bets.length; i++) {
+            if (bets[i][addr] > 0)
+                return true;
+        }
+
+        return false;
     }
 }
