@@ -10,7 +10,12 @@ contract DCSport {
 		
     }
 
-    function addMatch(address match) public {
+    modifier creatorPower() {
+    	require (bookmaker == msg.sender)
+    	_;
+    }
 
+    function addMatch(address match) public creatorPower {
+    	matches.push(match)
     }
 }
