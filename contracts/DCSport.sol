@@ -1,6 +1,8 @@
 pragma solidity ^0.5.9; 
 
-import "./ERC20.sol";
+import "./IERC20.sol";
+import "./SPORT.sol";
+import "./SPORTStaker.sol";
 
 contract DCSport {
 
@@ -32,10 +34,11 @@ contract DCSport {
     mapping(address => uint) public credits;
 
     // Accepted token in the betting
-    ERC20 daiToken;
+    IERC20 daiToken;
 
     constructor() public {
-        daiToken = ERC20(0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa);
+        bookmaker = msg.sender;
+        daiToken = IERC20(0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa);
         incrementedId = 0;
     }
 
@@ -64,8 +67,8 @@ contract DCSport {
     }
 
     function addMatch(string memory _opponent1, string memory _opponent2, uint _startTime, bool _acceptDraw) public bookmakerOnly {
-        require(bytes(_opponent1).length < 2, "Length of the opponent 1 is not correct");
-        require(bytes(_opponent2).length < 2, "Length of the opponent 2 is not correct");
+        require(bytes(_opponent1).length > 1, "Length of the opponent 1 is not correct");
+        require(bytes(_opponent2).length > 1, "Length of the opponent 2 is not correct");
         require(_startTime > block.timestamp + 86400, "The starting time is too short to initiate the match");
 
         address[] memory emptyAddressArray;
