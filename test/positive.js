@@ -20,37 +20,41 @@ contract("Positive test", function(accounts) {
 		var dt = new Date();
         var unixStartTime = Math.floor(dt.getTime() / 1000 + (60 * 60 * 24 * 3))
 
-        dcsportInstance = await DCSport.deployed({from: bookmaker})
         await dcsportInstance.addMatch("PSG", "OL", unixStartTime, true, {from: bookmaker});
-        console.log(dcsportInstance.incrementedId)
-		console.log(dcsportInstance.matches()[0])
-		console.log(dcsportInstance.matches()[1])
-        assert(dcsportInstance.matches[0].opponent1 === "PSG");
 
-		/*return DCSport.deployed({from: bookmaker})
-			.then(function (instance) {
-				dcsportInstance = instance;
+        assert((await dcsportInstance.matches(0)).opponent1 === "PSG");
+        assert((await dcsportInstance.matches(0)).opponent2 === "OL");
+		assert((await dcsportInstance.matches(0)).startTime.toNumber() === unixStartTime);
+		assert((await dcsportInstance.matches(0)).acceptDraw === true);
+	});
 
-				dcsportInstance.addMatch("PSG", "OL", unixStartTime, true, {from: bookmaker});
-			})
-			.then(() => {
-				console.log(dcsportInstance.matches)
-				console.log(dcsportInstance.matches[0])
-				console.log(dcsportInstance.matches[1])
-		        assert(dcsportInstance.matches[0].opponent1 === "PSG");
-				assert(dcsportInstance.matches[0].opponent2 === "OL");
-				assert(dcsportInstance.matches[0].startTime === unixStartTime);
-				assert(dcsportInstance.matches[0].acceptDraw === true);
+	it("Bet", async function() {
+        await dcsportInstance.bet(0, 1, 10, {from: bettor1});
 
-				dcsportInstance.bet(1, 20 * (18**10), {from: bettor1});
-	      	})
-	      	.then(() => {
-		        assert(dcsportInstance.matches[0].opponent1 === "PSG");
-				assert(dcsportInstance.matches[0].opponent2 === "OL");
-				assert(dcsportInstance.matches[0].startTime === unixStartTime);
-				assert(dcsportInstance.matches[0].acceptDraw === true);
-	      	}
-	    )*/
+        console.log(await (await dcsportInstance.matches(0)).bets[1])
+
+        assert((await (await dcsportInstance.matches(0)).bets[1])[bettor1] === 10);
+	});
+
+	it("Bet 2", async function() {
+        await dcsportInstance.bet(0, 2, 20, {from: bettor1});
+
+	});
+
+	it("Publish result", async function() {
+
+	});
+
+	it("Add Match", async function() {
+
+	});
+
+	it("Bet 3", async function() {
+
+	});
+
+	it("Cancel", async function() {
+		
 	});
 
 })

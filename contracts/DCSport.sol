@@ -13,7 +13,7 @@ contract DCSport {
     uint public incrementedId;
 
     // Match status
-    enum Status {INIT, ON_GOING, LOCKED, FINISHED, CANCELLED, DESTROYED}
+    enum Status {ON_GOING, LOCKED, FINISHED, CANCELLED, DESTROYED}
 
     // Match
     struct Match {
@@ -48,7 +48,7 @@ contract DCSport {
     }
 
     modifier validMatch(uint matchId) { 
-        require(matches[matchId].startTime == 0, "Unfound match with this ID");
+        require(matches[matchId].startTime != 0, "Unfound match with this ID");
         _;
     }
     
@@ -71,17 +71,19 @@ contract DCSport {
         require(bytes(_opponent2).length > 1, "Length of the opponent 2 is not correct");
         require(_startTime > block.timestamp + 86400, "The starting time is too short to initiate the match");
 
+        int[3] memory emptyUintArray;
         address[] memory emptyAddressArray;
-        uint[3] memory EmptyUintArray;
+        mapping(address => uint)[3] memory emptyBets;
         
         Match memory m = Match(
             _opponent1,
             _opponent2,
             _startTime,
             _acceptDraw,
-            Status.INIT,
-            EmptyUintArray,
-            emptyAddressArray
+            Status.ON_GOING,
+            emptyUintArray,
+            emptyAddressArray,
+            emptyBets
         );
 
         matches[incrementedId] = m;
@@ -92,16 +94,16 @@ contract DCSport {
     // Public functions
 
     function bet(uint matchId, uint8 betPosition, uint amount) public validMatch(matchId) validStatus(matchId, Status.ON_GOING) validPosition(matchId, betPosition) {
-        require(block.timestamp > (matches[matchId].startTime - 5 minutes), "The bets are not available anymore for this match");
+        require(block.timestamp < (matches[matchId].startTime - 5 minutes), "The bets are not available anymore for this match");
         require(amount > 1, "The minimum value of betting is 1 DAI");
-        require(daiToken.balanceOf(msg.sender) > amount, "Insufficient balance of DAI");
+        //require(amount < daiToken.balanceOf(msg.sender), "Insufficient balance of DAI");
 
-        daiToken.transferFrom(msg.sender, bookmaker, amount);
-        matches[matchId].bets[betPosition][msg.sender] += amount;
-        matches[matchId].totalBetsPerPosition[betPosition] += amount;
+        //daiToken.transferFrom(msg.sender, bookmaker, amount);
+        //matches[matchId].bets[betPosition][msg.sender] += amount;
+        //matches[matchId].totalBetsPerPosition[betPosition] += amount;
 
-        if (!hasAlreadyBet(matchId, msg.sender))
-            matches[matchId].bettors.push(msg.sender);
+        //if (!hasAlreadyBet(matchId, msg.sender))
+        //    matches[matchId].bettors.push(msg.sender);
     }
 
     function publishResult(uint matchId, uint8 winnerPosition) public bookmakerOnly validMatch(matchId) validStatus(matchId, Status.ON_GOING) validPosition(matchId, winnerPosition) {
