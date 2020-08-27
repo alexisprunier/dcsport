@@ -1,8 +1,8 @@
 pragma solidity ^0.5.9; 
 
 import "./IERC20.sol";
-import "./SPORT.sol";
-import "./SPORTStaker.sol";
+import "./Sport.sol";
+import "./SportStaker.sol";
 
 contract DCSport {
 
@@ -34,11 +34,11 @@ contract DCSport {
     mapping(address => uint) public credits;
 
     // Accepted token in the betting
-    IERC20 daiToken;
+    IERC20 token;
 
-    constructor() public {
+    constructor(address acceptedToken) public {
         bookmaker = msg.sender;
-        daiToken = IERC20(0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa);
+        token = IERC20(acceptedToken);
         incrementedId = 0;
     }
 
@@ -66,7 +66,10 @@ contract DCSport {
         _;
     }
 
-    function addMatch(string memory _opponent1, string memory _opponent2, uint _startTime, bool _acceptDraw) public bookmakerOnly {
+    function addMatch(string memory _opponent1, string memory _opponent2, uint _startTime, bool _acceptDraw) 
+        public 
+        bookmakerOnly 
+    {
         require(bytes(_opponent1).length > 1, "Length of the opponent 1 is not correct");
         require(bytes(_opponent2).length > 1, "Length of the opponent 2 is not correct");
         require(_startTime > block.timestamp + 86400, "The starting time is too short to initiate the match");
@@ -93,20 +96,43 @@ contract DCSport {
 
     // Public functions
 
-    function bet(uint matchId, uint8 betPosition, uint amount) public validMatch(matchId) validStatus(matchId, Status.ON_GOING) validPosition(matchId, betPosition) {
+    function bet(uint matchId, uint8 betPosition, uint amount) 
+        public 
+        validMatch(matchId) 
+        validStatus(matchId, Status.ON_GOING) 
+        validPosition(matchId, betPosition) 
+    {
         require(block.timestamp < (matches[matchId].startTime - 5 minutes), "The bets are not available anymore for this match");
         require(amount > 1, "The minimum value of betting is 1 DAI");
-        //require(amount < daiToken.balanceOf(msg.sender), "Insufficient balance of DAI");
+        require(amount < token.balanceOf(msg.sender), "Insufficient balance of DAI");
+        require(token.transferFrom(msg.sender, bookmaker, amount), "Token trasfert failed"); 
 
-        //daiToken.transferFrom(msg.sender, bookmaker, amount);
-        //matches[matchId].bets[betPosition][msg.sender] += amount;
-        //matches[matchId].totalBetsPerPosition[betPosition] += amount;
+        matches[matchId].bets[betPosition][msg.sender] += amount;
+        matches[matchId].totalBetsPerPosition[betPosition] += amount;
 
-        //if (!hasAlreadyBet(matchId, msg.sender))
-        //    matches[matchId].bettors.push(msg.sender);
+        if (!hasAlreadyBet(matchId, msg.sender))
+            matches[matchId].bettors.push(msg.sender);
     }
 
-    function publishResult(uint matchId, uint8 winnerPosition) public bookmakerOnly validMatch(matchId) validStatus(matchId, Status.ON_GOING) validPosition(matchId, winnerPosition) {
+    function betWithCredits(uint matchId, uint8 betPosition, uint amount) 
+        public 
+        validMatch(matchId) 
+        validStatus(matchId, Status.ON_GOING) 
+        validPosition(matchId, betPosition) 
+    {
+        require(block.timestamp < (matches[matchId].startTime - 5 minutes), "The bets are not available anymore for this match");
+        require(amount > 1, "The minimum value of betting is 1 DAI");
+        require(amount < token.balanceOf(msg.sender), "Insufficient balance of DAI");
+        //TODO
+    }
+
+    function publishResult(uint matchId, uint8 winnerPosition) 
+        public 
+        bookmakerOnly 
+        validMatch(matchId) 
+        validStatus(matchId, Status.ON_GOING) 
+        validPosition(matchId, winnerPosition) 
+    {
         require(block.timestamp > matches[matchId].startTime, "Cannot declare winner before the starting time of the match");
 
         // We get the total amount to distribute
@@ -131,7 +157,12 @@ contract DCSport {
         matches[matchId].status = Status.FINISHED;
     }
 
-    function cancel(uint matchId) public bookmakerOnly validMatch(matchId) validStatus(matchId, Status.ON_GOING) {
+    function cancel(uint matchId) 
+        public 
+        bookmakerOnly 
+        validMatch(matchId) 
+        validStatus(matchId, Status.ON_GOING) 
+    {
 
         // we distribute back the funds from the on-going bets
 
@@ -150,16 +181,21 @@ contract DCSport {
         matches[matchId].status = Status.CANCELLED;
     }
 
-    function withdraw(uint amount) public {
+    function withdraw(uint amount) 
+        public 
+    {
         require(amount > 1, "The minimum value of betting is 1 DAI");
         require(amount <= credits[msg.sender], "The requested amount is bigger than the available one");
-
-        daiToken.transfer(msg.sender, amount);
+        require(token.transferFrom(bookmaker, msg.sender, amount), "Token trasfert failed"); 
     }
 
     // Private functions
 
-    function hasAlreadyBet(uint matchId, address addr) private view returns (bool) {
+    function hasAlreadyBet(uint matchId, address addr) 
+        private 
+        view 
+        returns (bool) 
+    {
 
         for (uint8 i=0; i < matches[matchId].bets.length; i++) {
             if (matches[matchId].bets[i][addr] > 0)
@@ -168,4 +204,5 @@ contract DCSport {
 
         return false;
     }
+
 }

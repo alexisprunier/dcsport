@@ -8,11 +8,11 @@ import "./IERC20.sol";
  * @dev Modified implementation of the basic standard token.
  * https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
  */
- contract SPORT is IERC20 {
+ contract ERC20 is IERC20 {
 
-	string public constant name = "DCSport Token";
+	string public constant name = "DAI";
 
-	string public constant symbol = "SPORT";
+	string public constant symbol = "DAI";
 
 	uint8 public constant decimals = 18;
 
