@@ -1,6 +1,6 @@
 pragma solidity ^0.5.9; 
 
-import "./Sport.sol";
+/*import "./Sport.sol";
 import "./IERC20.sol";
 
 contract SportStaker {
@@ -52,4 +52,4 @@ contract SportStaker {
 
         require(sportToken.transferFrom(bookmaker, msg.sender, _amount), "Token trasfert failed"); 
     }
-}
+}*/
