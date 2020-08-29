@@ -1,8 +1,8 @@
 pragma solidity ^0.5.9; 
 
 import "./IERC20.sol";
-import "./Sport.sol";
-import "./SportStaker.sol";
+//import "./Sport.sol";
+//import "./SportStaker.sol";
 
 contract DCSport {
 
@@ -22,7 +22,7 @@ contract DCSport {
         uint startTime;
         bool acceptDraw;
         Status status;
-        uint[3] totalBetsPerPosition;
+        uint[] totalBetsPerPosition;
         address[] bettors;
         mapping(address => uint)[3] bets;
     }
@@ -47,7 +47,7 @@ contract DCSport {
         _;
     }
 
-    modifier validMatch(uint matchId) { 
+    modifier validMatch(uint matchId) {
         require(matches[matchId].startTime != 0, "Unfound match with this ID");
         _;
     }
@@ -73,10 +73,6 @@ contract DCSport {
         require(bytes(_opponent1).length > 1, "Length of the opponent 1 is not correct");
         require(bytes(_opponent2).length > 1, "Length of the opponent 2 is not correct");
         require(_startTime > block.timestamp + 86400, "The starting time is too short to initiate the match");
-
-        int[3] memory emptyUintArray;
-        address[] memory emptyAddressArray;
-        mapping(address => uint)[3] memory emptyBets;
         
         Match memory m = Match(
             _opponent1,
@@ -84,9 +80,8 @@ contract DCSport {
             _startTime,
             _acceptDraw,
             Status.ON_GOING,
-            emptyUintArray,
-            emptyAddressArray,
-            emptyBets
+            new uint[](3),
+            new address[](0)
         );
 
         matches[incrementedId] = m;
@@ -122,8 +117,14 @@ contract DCSport {
     {
         require(block.timestamp < (matches[matchId].startTime - 5 minutes), "The bets are not available anymore for this match");
         require(amount > 1, "The minimum value of betting is 1 DAI");
-        require(amount < token.balanceOf(msg.sender), "Insufficient balance of DAI");
-        //TODO
+        require(amount < credits[msg.sender], "Insufficient balance of DAI in credit");
+        
+        matches[matchId].bets[betPosition][msg.sender] += amount;
+        matches[matchId].totalBetsPerPosition[betPosition] += amount;
+        credits[msg.sender] -= amount;
+
+        if (!hasAlreadyBet(matchId, msg.sender))
+            matches[matchId].bettors.push(msg.sender);
     }
 
     function publishResult(uint matchId, uint8 winnerPosition) 
@@ -204,5 +205,4 @@ contract DCSport {
 
         return false;
     }
-
 }
