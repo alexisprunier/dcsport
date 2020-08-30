@@ -1,10 +1,11 @@
 import React from "react";
 import "./App.css";
 import { ethers } from 'ethers';
-const DCSportArtifact = require('./../build/contracts/DCSport.json');
+import Menu from './component/Menu.jsx';
+//const DCSportArtifact = require('./../build/contracts/DCSport.json');
 
 
-class App extends React.Component {
+export default class App extends React.Component {
 
     constructor(props) {
         super(props);
@@ -19,21 +20,29 @@ class App extends React.Component {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
 
-        var address = DCSportArtifact["networks"][provider.getNetwork]["address"];
-        var abi = DCSportArtifact["abi"];
+        //var address = DCSportArtifact["networks"][provider.getNetwork]["address"];
+        //var abi = DCSportArtifact["abi"];
 
-        this.setState({dcsport: new ethers.Contract(address, abi, signer)});
+        //this.setState({dcsport: new ethers.Contract(address, abi, signer)});
     }
 
    
     render() {
         return (
             <div className="App">
-                {this.state.dcsport.bookmaker}
+                <div className="Logo">
+                    DCSport
+                </div>
+                <div className="Disclaimer">
+                    This is a beta version. Consider the risks.
+                </div>
+                <div className="Version">
+                    0.1
+                </div>
+                <Menu/>
+
             </div>
         );
     }
     
 }
-
-export default App;

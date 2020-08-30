@@ -37,7 +37,10 @@ contract("Positive test", function(accounts) {
 
         await dcsportInstance.addMatch("PSG", "OL", unixStartTime, true, {from: bookmaker});
 
-        assert((await dcsportInstance.matches(0)).opponent1 === "PSG");
+        assert((await dcsportInstance.matches(0)).opponent1 === "PSG"); 
+
+
+           
         assert((await dcsportInstance.matches(0)).opponent2 === "OL");
 		assert((await dcsportInstance.matches(0)).startTime.toNumber() === unixStartTime);
 		assert((await dcsportInstance.matches(0)).acceptDraw === true);

@@ -1,5 +1,15 @@
 
 body {
+	background-image: url("/img/background.png");
+	background-position: center;
+	background-color: rgba(255, 255, 255, 0.5);
+	-webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin: 0 !important;
 }
 
 html, body {
@@ -8,9 +18,35 @@ html, body {
 
 #root {
     height: 100%;
+    width: 100%;
 }
 
 .App {
+	background-color: rgba(0, 0, 0, 0.85);
     width: 100%;
     height: 100%;
+}
+
+.App {
+	background-color: rgba(0, 0, 0, 0.85);
+    width: 100%;
+    height: 100%;
+}
+
+.Logo {
+	position: absolute;
+	left: 10px;
+	bottom: 10px;
+}
+
+.Disclaimer {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+}
+
+.Version {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
 }
