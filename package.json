@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "canvasjs-react-charts": "^1.0.5",
     "ethers": "^5.0.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

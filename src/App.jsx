@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import { ethers } from 'ethers';
 import Menu from './component/Menu.jsx';
+import PageWhitePaper from './component/PageWhitePaper.jsx';
 //const DCSportArtifact = require('./../build/contracts/DCSport.json');
 
 
@@ -40,7 +41,9 @@ export default class App extends React.Component {
                     0.1
                 </div>
                 <Menu/>
-
+                <div className="PageContent">
+                    <PageWhitePaper/>
+                </div>
             </div>
         );
     }
