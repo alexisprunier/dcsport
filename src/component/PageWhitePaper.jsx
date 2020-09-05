@@ -70,7 +70,7 @@ export default class PageWhitePaper extends React.Component {
             backgroundColor: "transparent",
             title:{
                 fontColor: "white",
-                text: "Amount of bettors",
+                text: "Distribution of the pool (in %)",
                       
             },
             data: [              
@@ -81,8 +81,30 @@ export default class PageWhitePaper extends React.Component {
                 labelFontColor: "white",
                 dataPoints: [
                     { label: "Default distribution",  y: 95  },
-                    { label: "Early bettos and SPORT tken stackers", y: 4  },
+                    { label: "Early bettors and SPORT token stackers", y: 4  },
                     { label: "Bookmaker", y: 1  }
+                ]
+            }
+            ]
+        };
+
+        var chart4Options = {
+            backgroundColor: "transparent",
+            title:{
+                fontColor: "white",
+                text: "Distribution of the SPORT tokens (in #)",
+                      
+            },
+            data: [              
+            {
+                type: "pie",
+                startAngle: 240,
+                indexLabelLineColor: "white",
+                labelFontColor: "white",
+                dataPoints: [
+                    { label: "DCSport team",  y: 500000  },
+                    { label: "Bettors", y: 300000  },
+                    { label: "Partnership and community", y: 200000  }
                 ]
             }
             ]
@@ -92,10 +114,10 @@ export default class PageWhitePaper extends React.Component {
             <div className="PageWhitePaper">
 
                 <h1>White Paper</h1>
+                
                 <h2>Why DCSport?</h2>
                 <h2>How does it work?</h2>
-                <h2>What's the SPORT token?</h2>
-                <h2>How can I get SPORT tokens?</h2>
+                <h2>What's the SPORT token and how can I get it?</h2>
                 <h2>Why should I become bookmaker?</h2>
 
                 <h1>Why DCSport?</h1>
@@ -142,16 +164,28 @@ export default class PageWhitePaper extends React.Component {
                 <div className="padding">
                     <CanvasJSChart ref="chart3Options" options={chart3Options}/>
                 </div>
-                <p>As we can see, 95% of the stack goes to the winners with a simple division.</p>
+                <p>As we can see, 95% of the stack goes to the winners. The distribution is naturally dictated by the ratio size in the winner pool. 1% of the total pool goes directly to the bookmaker. To finish, the remaining 4% goes to the winner that boosted their odds. There are 2 ways to boost and increase gains:</p>
+                <ul>
+                    <li>Being amonst <b>the first bettors</b> in the winning pool</li>
+                    <li><b>Stack SPORT tokens</b></li>
+                </ul>
 
 
-                <h1>What's the SPORT token?</h1>
-
-
-                <h1>How can I get SPORT tokens?</h1>
+                <h1>What's the SPORT token and how can I get it?</h1>
+                <p>The SPORT token is the token emitted by DCSport. There is a total of 1 million tokens. This represents use cases for both players and bookmakers.</p>
+                <p>Both of the profiles will be able to stake those tokens. On the first hand, the amount stacked will boost the odds for the bettors. On the other hand, the bookmaker will have access to the organisation to initiate matches and collect the reward related to them.</p>
+                <p>Here is the representation of the distribution of the token:</p>
+                <div className="padding">
+                    <CanvasJSChart ref="chart4Options" options={chart4Options}/>
+                </div>
+                <p>So, 300000 tokens (30%) will be distributed to the active bettors. Indeed, for every DAI injected in a bet, the bettors will receive back as much SPORT token. This until the stock of 300000 runs out.</p>
+                <p>20% of the reserve will be use in a short term to raise initial funds and reward the active member of the community.</p>
+                <p>The 1/2 million tokens will be remaining in DCSport's hands for a longer term usage.</p>
 
 
                 <h1>Why should I become bookmaker?</h1>
+                <p>The first reason is because you are a sport lover. :P If you wanna bet on matches that are usually not on the platform, you will create the acces to those bets to yourself and the DCSport community. You can then share it to your friend to bet with or against you. :)</p>
+                <p>Also, you can use DCSport to be rewarded. You can create matches and build a community around you. Remember that you receive 1% from the pools of the matches you initiate!</p>
 
 
             </div>
