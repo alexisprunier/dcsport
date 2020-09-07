@@ -1,0 +1,33 @@
+
+.Match {
+	width: 100%;
+	height: 500px;
+	background-color: red;
+	display: flex;
+  	align-items: center;
+  	justify-content: center;
+}
+
+.Match-vs {
+	margin: auto;
+  	display: block;
+  	vertical-align: middle;
+  	height: 25%;
+}
+
+.Match-opponent1-text {
+	width: 100%;
+	position: absolute;
+	top: 25px;
+	left: 40px;
+	font-size: 40px;
+}
+
+.Match-opponent2-text {
+	width: 100%;
+	position: absolute;
+	bottom: 25px;
+	right: 40px;
+	text-align: right;
+	font-size: 40px;
+}
