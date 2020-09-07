@@ -1,5 +1,5 @@
 import React from "react";
-import "./WhitePaper.css";
+import "./PageWhitePaper.css";
 import {CanvasJSChart} from 'canvasjs-react-charts';
 
 export default class PageWhitePaper extends React.Component {
@@ -14,7 +14,7 @@ export default class PageWhitePaper extends React.Component {
             backgroundColor: "transparent",
             title:{
                 fontColor: "white",
-                text: "Total amount of Dai bet",
+                text: "Total amount of DAI bet",
                       
             },
             axisX: {               
@@ -70,7 +70,7 @@ export default class PageWhitePaper extends React.Component {
             backgroundColor: "transparent",
             title:{
                 fontColor: "white",
-                text: "Distribution of the pool (in %)",
+                text: "Distribution of the stack (in %)",
                       
             },
             data: [              
@@ -81,7 +81,8 @@ export default class PageWhitePaper extends React.Component {
                 labelFontColor: "white",
                 dataPoints: [
                     { label: "Default distribution",  y: 95  },
-                    { label: "Early bettors and SPORT token stackers", y: 4  },
+                    { label: "SPORT stackers", y: 2  },
+                    { label: "Early bettors", y: 2  },
                     { label: "Bookmaker", y: 1  }
                 ]
             }
@@ -117,8 +118,10 @@ export default class PageWhitePaper extends React.Component {
                 
                 <h2>Why DCSport?</h2>
                 <h2>How does it work?</h2>
-                <h2>What's the SPORT token and how can I get it?</h2>
+                <h2>What's the <img src="/img/SPORT.png" style={{"width": 36}}/> token  and how can I get it?</h2>
                 <h2>Why should I become bookmaker?</h2>
+                <h2>"Early bettors" stack distribution</h2>
+                <h2>"SPORT stacker" stack distribution</h2>
 
                 <h1>Why DCSport?</h1>
                 <p>DCSport, for DeCentralized Sport, is a application using the Ethereum blockchain to allow decentralized application lovers to bet on their favourite sports.</p>
@@ -128,7 +131,7 @@ export default class PageWhitePaper extends React.Component {
                     <li>Then, there is <b>no middleman</b> to take a part of the stack. Indeed, The port is fully distributed to the winners and the bookmakers.</li>
                     <li>You can <b>become the organizer</b> of betting events, accordingly called bookmaker. You then can receive a part of the pot from the betting session you've created.</li>
                 </ul>
-                <p>The aim is to incentivised the people by distributing the SPORT token and create a community of bookmakers. Those bookmaker will make sure that the players get access the betting opportunity they wish!</p>
+                <p>The aim is to incentivised the people by distributing the <img src="/img/SPORT.png" style={{"width": 22}}/> token and create a community of bookmakers. Those bookmaker will make sure that the players get access the betting opportunity they wish!</p>
                 
 
                 <h1>How does it work?</h1>
@@ -167,18 +170,18 @@ export default class PageWhitePaper extends React.Component {
                 <p>As we can see, 95% of the stack goes to the winners. The distribution is naturally dictated by the ratio size in the winner pool. 1% of the total pool goes directly to the bookmaker. To finish, the remaining 4% goes to the winner that boosted their odds. There are 2 ways to boost and increase gains:</p>
                 <ul>
                     <li>Being amonst <b>the first bettors</b> in the winning pool</li>
-                    <li><b>Stack SPORT tokens</b></li>
+                    <li><b>Stack <img src="/img/SPORT.png" style={{"width": 22}}/> tokens</b></li>
                 </ul>
 
 
-                <h1>What's the SPORT token and how can I get it?</h1>
-                <p>The SPORT token is the token emitted by DCSport. There is a total of 1 million tokens. This represents use cases for both players and bookmakers.</p>
+                <h1>What's the <img src="/img/SPORT.png" style={{"width": 45}}/> token and how can I get it?</h1>
+                <p>The "SPORT" token is the token emitted by DCSport. There is a total of 1 million tokens. This represents use cases for both players and bookmakers.</p>
                 <p>Both of the profiles will be able to stake those tokens. On the first hand, the amount stacked will boost the odds for the bettors. On the other hand, the bookmaker will have access to the organisation to initiate matches and collect the reward related to them.</p>
                 <p>Here is the representation of the distribution of the token:</p>
                 <div className="padding">
                     <CanvasJSChart ref="chart4Options" options={chart4Options}/>
                 </div>
-                <p>So, 300000 tokens (30%) will be distributed to the active bettors. Indeed, for every DAI injected in a bet, the bettors will receive back as much SPORT token. This until the stock of 300000 runs out.</p>
+                <p>So, 300000 tokens (30%) will be distributed to the active bettors. Indeed, for every DAI injected in a bet, the bettors will receive back as much <img src="/img/SPORT.png" style={{"width": 22}}/> token. This until the stock of 300000 runs out.</p>
                 <p>20% of the reserve will be use in a short term to raise initial funds and reward the active member of the community.</p>
                 <p>The 1/2 million tokens will be remaining in DCSport's hands for a longer term usage.</p>
 
@@ -187,6 +190,67 @@ export default class PageWhitePaper extends React.Component {
                 <p>The first reason is because you are a sport lover. :P If you wanna bet on matches that are usually not on the platform, you will create the acces to those bets to yourself and the DCSport community. You can then share it to your friend to bet with or against you. :)</p>
                 <p>Also, you can use DCSport to be rewarded. You can create matches and build a community around you. Remember that you receive 1% from the pools of the matches you initiate!</p>
 
+
+                <h1>"Early bettors" stack distribution</h1>
+                <p>As we mentionned earlier, 2% of the total stack of a macth is dedicated to the early bettors of the winning pool.</p>
+                <p>The number N is the total of people receiving the stack it is defined by calculating the downwards rounding of the square root of the total number of bettors in the winning pool.</p>
+                <p>Then, we calculate P1, the bonus of the first bettor as folow:</p>
+                <ul>
+                    <li>P1 = SQUAREROOT(N) / TOTAL STACK</li>
+                </ul>
+                <p>A descending geometric sequence is used to calculate the bonus of the other lucky bettors. To do so, we need to calculate a quotient Q:</p>
+                <ul>
+                    <li>Q = 1 - (P1 - TOTAL STACK)</li>
+                </ul>
+                <p>To finish, we just have to apply the final formulae to retrieve the bonus of the bettors in the position n:</p>
+                <ul>
+                    <li>Pn = Q exp(n-1) * P1</li>
+                </ul>
+                <p>Here is a calculator to simulate the bonuses.</p>
+                <div className="row PageWhitePaper-match">
+                    <div className="col-md-4">
+                        TOTAL STACK
+                    </div>
+                    <div className="col-md-4">
+                        N
+                    </div>
+                    <div className="col-md-4">
+                        My position
+                    </div>
+                    <div className="col-md-4">
+                        <input
+                            type="text"
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <input
+                            type="text"
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        <input
+                            type="text"
+                        />
+                    </div>
+                </div>
+                <div className="row PageWhitePaper-match">
+                    <div className="col-md-10">
+                        Total number of bettors receiving a bonus:
+                    </div>
+                    <div className="col-md-2">
+                        8
+                    </div>
+                    <div className="col-md-10">
+                        My bonus: 
+                    </div>
+                    <div className="col-md-2">
+                        140
+                    </div>
+                </div>
+
+
+                <h1>"SPORT stacker" stack distribution</h1>
+                <p></p>
 
             </div>
         );

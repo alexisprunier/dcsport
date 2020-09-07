@@ -3,6 +3,7 @@ import "./App.css";
 import { ethers } from 'ethers';
 import Menu from './component/Menu.jsx';
 import PageWhitePaper from './component/PageWhitePaper.jsx';
+import PageStadium from './component/PageStadium.jsx';
 //const DCSportArtifact = require('./../build/contracts/DCSport.json');
 
 
@@ -11,8 +12,10 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
 
+        this.changeState = this.changeState.bind(this);
+
         this.state = {
-            dcsport: null,
+            selectedMenu: "STADIUM",
         }
     }
 
@@ -27,12 +30,15 @@ export default class App extends React.Component {
         //this.setState({dcsport: new ethers.Contract(address, abi, signer)});
     }
 
+    changeState(field, value) {
+        this.setState({[field]: value});
+    }
    
     render() {
         return (
             <div className="App">
                 <div className="Logo">
-                    DCSport
+                    <img src="/img/DCSport.png"/>
                 </div>
                 <div className="Disclaimer">
                     This is a beta version. Consider the risks.
@@ -40,9 +46,14 @@ export default class App extends React.Component {
                 <div className="Version">
                     0.1
                 </div>
-                <Menu/>
+                <Menu
+                    changeMenu={(x) => this.changeState("selectedMenu", x)}
+                    selectedMenu={this.state.selectedMenu}
+                />
                 <div className="PageContent">
-                    <PageWhitePaper/>
+                    {this.state.selectedMenu == "STADIUM" ? <PageStadium/> : ""}
+                    {this.state.selectedMenu == "PROFILE" ? <PageWhitePaper/> : ""}
+                    {this.state.selectedMenu == "WHITE_PAPER" ? <PageWhitePaper/> : ""}
                 </div>
             </div>
         );
